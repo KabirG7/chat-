@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Peer from 'peerjs';
+import './App.css';  
 
 function App() {
   const [myPeerId, setMyPeerId] = useState('');
@@ -14,15 +15,14 @@ function App() {
   const conn = useRef(null);
 
   useEffect(() => {
-    // Use the free public PeerJS server with secure configuration
     const peer = new Peer(undefined, {
       secure: true,
       config: {
         iceServers: [
           { urls: 'stun:stun.l.google.com:19302' },
-          { urls: 'stun:global.stun.twilio.com:3478' }
-        ]
-      }
+          { urls: 'stun:global.stun.twilio.com:3478' },
+        ],
+      },
     });
 
     peer.on('open', (id) => {
@@ -86,7 +86,7 @@ function App() {
       outgoingConn.on('open', () => {
         setupConnection(outgoingConn);
       });
-      
+
       outgoingConn.on('error', (err) => {
         setError(`Failed to connect: ${err.message}`);
       });
@@ -113,75 +113,75 @@ function App() {
   };
 
   return (
-    <div className="p-4 max-w-2xl mx-auto">
-      <h1 className="text-2xl font-bold mb-4">P2P Chat App</h1>
+    <div className="container mx-auto py-6">
+      <h1 className="heading text-center mb-6">P2P Chat App</h1>
 
       {connecting && (
-        <div className="bg-yellow-100 border border-yellow-400 text-yellow-700 px-4 py-2 mb-4 rounded">
+        <div className="alert alert-info mb-4">
           Connecting to server...
         </div>
       )}
 
       {error && (
-        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-2 mb-4 rounded">
+        <div className="alert alert-danger mb-4">
           {error}
         </div>
       )}
 
       {!connected ? (
-        <div className="space-y-4">
+        <div className="connection-setup">
           <div>
-            <h3 className="font-semibold">Your Peer ID:</h3>
-            <p className="bg-gray-100 p-2 rounded break-all">
+            <h3 className="subheading">Your Peer ID:</h3>
+            <p className="peer-id-box">
               {myPeerId || 'Generating...'}
             </p>
           </div>
 
           <div>
-            <h3 className="font-semibold">Enter Peer ID to Connect:</h3>
+            <h3 className="subheading">Enter Peer ID to Connect:</h3>
             <input
               type="text"
               value={connectionId}
               onChange={(e) => setConnectionId(e.target.value)}
               placeholder="Enter Peer ID"
-              className="border p-2 rounded w-full mb-2"
+              className="input-box mb-2"
             />
             <button
               onClick={handleConnect}
               disabled={connecting}
-              className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 disabled:bg-blue-300"
+              className="btn btn-primary"
             >
               Connect
             </button>
           </div>
         </div>
       ) : (
-        <div>
-          <h2 className="text-xl font-semibold mb-4">Chat Room</h2>
-          <div className="border rounded p-4 h-96 overflow-y-auto mb-4 bg-gray-50">
+        <div className="chat-room">
+          <h2 className="chat-heading mb-4">Chat Room</h2>
+          <div className="chat-messages mb-4">
             {messages.map((msg, index) => (
               <div
                 key={index}
-                className={`mb-2 ${
-                  msg.sender === 'You' ? 'text-right' : 'text-left'
+                className={`message ${
+                  msg.sender === 'You' ? 'message-outgoing' : 'message-incoming'
                 }`}
               >
-                <span className="font-semibold">{msg.sender}:</span> {msg.text}
+                <span className="message-sender">{msg.sender}:</span> {msg.text}
               </div>
             ))}
           </div>
-          <div className="flex gap-2">
+          <div className="message-input">
             <input
               type="text"
               value={newMessage}
               onChange={(e) => setNewMessage(e.target.value)}
               onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
               placeholder="Type your message"
-              className="border p-2 rounded flex-1"
+              className="input-box"
             />
             <button
               onClick={handleSendMessage}
-              className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+              className="btn btn-send"
             >
               Send
             </button>
