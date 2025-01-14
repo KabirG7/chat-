@@ -114,7 +114,7 @@ function App() {
 
   return (
     <div className="container mx-auto py-6">
-      <h1 className="heading text-center mb-6">P2P Chat App</h1>
+      <h1 className="heading text-center mb-6">******</h1>
 
       {connecting && (
         <div className="alert alert-info mb-4">
